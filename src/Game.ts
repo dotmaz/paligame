@@ -16,6 +16,8 @@ export class Game {
   private keypressHandler: (e: KeyboardEvent) => void;
   private clickHandler: (e: MouseEvent) => void;
 
+  private currentScene: "first" | "second" = "first";
+
   constructor() {
     this.app = new PIXI.Application();
     // Bind handlers once
@@ -29,9 +31,9 @@ export class Game {
       console.log(`PRESSING ${e.key}`);
     };
     this.clickHandler = (e: MouseEvent) => {
-      // If you want to clamp it
-      // const clampedX = Math.max(0, Math.min(e.offsetX, GAME_WIDTH));
-      // const clampedY = Math.max(0, Math.min(e.offsetY, GAME_HEIGHT));
+      if (this.currentScene === "first") {
+        this.secondScene();
+      }
     };
   }
 
@@ -49,7 +51,7 @@ export class Game {
     element.appendChild(this.app.canvas);
 
     this.setupInput();
-    this.createScene();
+    await this.firstScene();
 
     // Start the game loop
     this.app.ticker.add(() => this.update());
@@ -62,15 +64,22 @@ export class Game {
     this.app.canvas.addEventListener("click", this.clickHandler);
   }
 
-  private createScene() {
-    // Example: Creating a 'player'
-    this.player = new PIXI.Graphics();
-    this.player.rect(0, 0, 10, 10);
-    this.player.fill(0xff4444);
-    this.player.x = this.app.screen.width / 2;
-    this.player.y = this.app.screen.height / 2;
-    this.app.stage.addChild(this.player);
-    // this.entities.push(this.player);
+  private async firstScene() {
+    console.log("firstScene");
+    // Load the image using Assets.load (required in PixiJS v8)
+    const texture = await PIXI.Assets.load("/sprites/juiceteam.jpeg");
+    const sprite = new PIXI.Sprite(texture);
+    sprite.x = 0;
+    sprite.y = 0;
+    sprite.width = GAME_WIDTH;
+    sprite.height = GAME_HEIGHT;
+
+    this.app.stage.addChild(sprite);
+  }
+
+  private async secondScene() {
+    this.currentScene = "second";
+    this.app.stage.removeChildren();
   }
 
   // This is the main game loop
