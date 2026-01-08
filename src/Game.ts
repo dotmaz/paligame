@@ -16,7 +16,7 @@ export class Game {
   private keypressHandler: (e: KeyboardEvent) => void;
   private clickHandler: (e: MouseEvent) => void;
 
-  private currentScene: "first" | "second" = "first";
+  private currentScene: "menu" | "order" = "menu";
 
   constructor() {
     this.app = new PIXI.Application();
@@ -31,8 +31,10 @@ export class Game {
       console.log(`PRESSING ${e.key}`);
     };
     this.clickHandler = (e: MouseEvent) => {
-      if (this.currentScene === "first") {
+      if (this.currentScene === "menu") {
         this.secondScene();
+      }
+      if (this.currentScene === "order") {
       }
     };
   }
@@ -78,7 +80,7 @@ export class Game {
   }
 
   private async secondScene() {
-    this.currentScene = "second";
+    this.currentScene = "order";
     this.app.stage.removeChildren();
   }
 
