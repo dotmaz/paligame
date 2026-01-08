@@ -16,7 +16,7 @@ export class Game {
   private keypressHandler: (e: KeyboardEvent) => void;
   private clickHandler: (e: MouseEvent) => void;
 
-  private currentScene: "first" | "second" = "first";
+  private currentScene: "menu" | "arrive" | "order" = "menu";
 
   constructor() {
     this.app = new PIXI.Application();
@@ -31,8 +31,11 @@ export class Game {
       console.log(`PRESSING ${e.key}`);
     };
     this.clickHandler = (e: MouseEvent) => {
-      if (this.currentScene === "first") {
-        this.secondScene();
+      if (this.currentScene === "menu") {
+        this.arrive();
+      }
+      if (this.currentScene === "arrive") {
+        this.thirdScene();
       }
     };
   }
@@ -77,9 +80,26 @@ export class Game {
     this.app.stage.addChild(sprite);
   }
 
-  private async secondScene() {
-    this.currentScene = "second";
+  private async order() {
+    this.currentScene = "order";
     this.app.stage.removeChildren();
+  }
+
+  private async arrive() {
+    this.currentScene = "arrive";
+    this.app.stage.removeChildren();
+    const audio = new Audio('/audio/arrival.m4a');
+    audio.play().catch((error) => {
+        console.error("Error playing audio:", error);
+    });
+    const bg = await PIXI.Assets.load("/sprites/order.png");
+    const bgSprite = new PIXI.Sprite(bg);
+    bgSprite.x = 0;
+    bgSprite.y = 0;
+    bgSprite.width = GAME_WIDTH;
+    bgSprite.height = GAME_HEIGHT;
+
+    this.app.stage.addChild(bgSprite);
   }
 
   // This is the main game loop
